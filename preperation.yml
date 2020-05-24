@@ -1,0 +1,47 @@
+- name: build image
+  gather_facts: true
+  become: true
+  hosts: all
+  tasks:
+    - name: Download kubectl binary
+      get_url:
+        url: "https://storage.googleapis.com/kubernetes-release/release/v1.17.3/bin/linux/amd64/kubectl"
+        checksum: "sha256:ae8627adb1f0ae7bdb82ffd74a579953b8acdcd4b94aeefc7569078c3d7994c6"
+        dest: "/tmp"
+      tags:
+        - kubectl
+    - name: Copy kubectl binary to destination directory
+      copy:
+        src: "/tmp/kubectl"
+        dest: "/usr/bin/kubectl"
+        mode: "777"
+        owner: "terasky"
+        group: "terasky"
+        remote_src: yes
+      with_items:
+        - kubectl
+    - name: Update apt-get repo and cache
+      apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+    - name: Upgrade all apt packages
+      apt: upgrade=dist force_apt_get=yes
+    - name: install jq
+      apt:
+        name: jq
+        state: present
+    - name: install wget
+      apt:
+        name: wget
+        state: present
+    - name: Download terraform archive Linux 64 bits
+      get_url:
+         url: https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip
+        dest: /tmp/terraform-0.12.25.zip
+    - name: Install unzip to unarchive terraform
+      package:
+        name: unzip
+        state: present
+    - name: Unarchive Terraform archive
+      unarchive:
+        src: /tmp/terraform-0.12.25.zip
+        dest: "/usr/bin"
+        copy: no
