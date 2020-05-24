@@ -45,3 +45,7 @@
         src: /tmp/terraform-0.12.25.zip
         dest: "/usr/bin"
         copy: no
+    - name: install cloud-init
+      apt:
+        name: cloud-init
+        state: present
