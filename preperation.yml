@@ -35,7 +35,7 @@
     - name: Download terraform archive Linux 64 bits
       get_url:
          url: https://releases.hashicorp.com/terraform/0.12.25/terraform_0.12.25_linux_amd64.zip
-        dest: /tmp/terraform-0.12.25.zip
+         dest: /tmp/terraform-0.12.25.zip
     - name: Install unzip to unarchive terraform
       package:
         name: unzip
